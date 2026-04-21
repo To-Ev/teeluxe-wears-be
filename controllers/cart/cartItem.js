@@ -37,7 +37,7 @@ const cartItem = async (req, res) => {
                 cart.products.push({
                     productId,
                     name: product.name,
-                    image: product.image[0].url,
+                    image: product.images[0].url,
                     price: product.price,
                     size,
                     color,
@@ -68,7 +68,7 @@ const cartItem = async (req, res) => {
                         quantity
                     },
                 ],
-                totalPrice: product.price * quantity
+                totalPrice: product.price * (Number(quantity) || 1)
             });
             return res.status(201).json(newCart)
         }
