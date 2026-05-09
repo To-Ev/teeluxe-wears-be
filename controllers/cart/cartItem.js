@@ -31,7 +31,7 @@ const cartItem = async (req, res) => {
 
             if(productIndex > -1) {
                 // if product exist already, update the quantity
-                cart.products[productIndex].quantity = quantity;
+                cart.products[productIndex].quantity += quantity;
             }else {
                 // add new product
                 cart.products.push({
@@ -43,15 +43,16 @@ const cartItem = async (req, res) => {
                     color,
                     quantity,
                 });
+
+                // Recalculate the total price
+                cart.totalPrice = cart.products.reduce(
+                    (acc, item) => acc + Number(item.price) * Number(item.quantity),
+                    0
+                );
+                await cart.save();
+                return res.status(200).json(cart);
             }
 
-            // Recalculate the total price
-            cart.totalPrice = cart.products.reduce(
-                (acc, item) => acc + (Number(item.price) || 0) * (Number(item.quantity) || 0),
-                0
-            );
-            await cart.save();
-            return res.status(200).json(cart);
         } else {
             // create a new cart for guest or user
             const newCart = await Cart.create({
@@ -85,7 +86,7 @@ const cartContent = async (req, res) => {
         
         // determine if the user is loggedIn or guest
         let cart = await getCart(userId, guestId);
-        if(!cart) return res.status(404).json({ err: "Cart not found" });
+        if(!cart) return res.status(404).json({ err: "Cart not found!" });
 
         const productIndex = cart.products.findIndex(
             (p) => 
@@ -104,7 +105,7 @@ const cartContent = async (req, res) => {
             }
             // Recalculate the total price
             cart.totalPrice = cart.products.reduce(
-                (acc, item) => acc + (Number(item.price) || 0) * (Number(item.quantity) || 0),
+                (acc, item) => acc + Number(item.price) * Number(item.quantity),
                 0
             );
             await cart.save();
@@ -125,7 +126,7 @@ const cartContentDelete = async (req, res) => {
         
         // determine if the user is loggedIn or guest
         let cart = await getCart(userId, guestId);
-        if(!cart) return res.status(404).json({ err: "Cart not found" });
+        if(!cart) return res.status(404).json({ err: "Cart not found!" });
 
         const productIndex = cart.products.findIndex(
             (p) => 
@@ -139,7 +140,7 @@ const cartContentDelete = async (req, res) => {
            
             // Recalculate the total price
             cart.totalPrice = cart.products.reduce(
-                (acc, item) => acc + (Number(item.price) || 0) * (Number(item.quantity) || 0),
+                (acc, item) => acc + Number(item.price) * Number(item.quantity),
                 0
             );
             await cart.save();
@@ -161,7 +162,7 @@ const getUserCart = async (req, res) => {
         if(cart) {
             res.status(200).json(cart);
         } else {
-            res.status(404).json({ err: "Cart not found" });
+            res.status(404).json({ err: "Cart not found!" });
         }
     } catch (err) {
         console.error(err);
@@ -169,4 +170,71 @@ const getUserCart = async (req, res) => {
     };
 };
 
-module.exports = {cartItem, cartContent, cartContentDelete, getUserCart}
+const mergeItems = async (req, res) => {
+    const { guestId } = req.body;
+
+    try {
+        // find the guest and user cart
+        const guestCart = await Cart.findOne({ guestId });
+        const userCart = await Cart.findOne({ user: req.user._id });
+
+        if(guestCart) {
+            if(guestCart.products.length === 0) {
+                return res.status(400).json({ err: "Guest cart  is empty!"});
+            }
+
+            if(userCart) {
+                // merge guest cart into user
+                guestCart.products.forEach((guestItem) => {
+                    const productIndex = userCart.products.findIndex(
+                        (item) => 
+                            item.productId.toString() === guestItem.productId.toString() &&
+                            item.size === guestItem.size && 
+                            item.color === guestItem.color
+                    );
+
+                    if (productIndex > -1) {
+                        // if the items exists in yhe cart, update the quantity
+                        userCart.products[productIndex].quantity += guestItem.quantity;
+
+                    }else {
+                        // otherwise  add the guest item to the cart
+                        userCart.products.push(guestItem);
+                    };
+                });
+
+                userCart.totalPrice = userCart.Products.reduce(
+                    (acc, item) => acc + item.price * item.quantity,
+                    0
+                );
+
+                await userCart.save();
+
+                // remove the guest cart after merging
+                try {
+                    await Cart.findOneAndDelete({ guestId });
+                } catch (err) {
+                    console.error(`Error deleting guest cart:`, err)
+                }
+                res.status(200).json(userCart);
+            } else {
+                // if the user has no existing cart, assign new cart to the user
+                guestCart.user = req.user._id;
+                guestCart.guestId = undefined;
+                await guestCart.save();
+
+                res.status(200).json(guestCart)
+            }
+        } else {
+            if (userCart) {
+                // Guest cart has already been merged, return user cart
+                return res.status(200).json(userCart);
+            }
+            res.status(404).json({ err: "Guest cart not found!" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
+}
+module.exports = {cartItem, cartContent, cartContentDelete, getUserCart, mergeItems}

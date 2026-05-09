@@ -27,7 +27,7 @@ const cartSchema = new Schema({
         ref: "UserDB"
     },
     guestId: String,
-    products: {cartItemSchema},
+    products: [cartItemSchema],
     totalPrice: {
         type: Number,
         required: true,

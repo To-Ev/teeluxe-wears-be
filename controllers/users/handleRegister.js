@@ -1,4 +1,4 @@
-const User = require("../../model/Users");
+const UserDB = require("../../model/Users");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -8,7 +8,7 @@ const handleRegister = async (req, res) =>{
     try {
         if(!name || !email || !password) return res.status(400).json({ err: "Enter email and password" })
         // Registration Logic 
-        const conflict = await User.findOne({ email }).exec();
+        const conflict = await UserDB.findOne({ email }).exec();
 
         if(conflict) return res.status(409).json({ err: "User already exists!" });
 
@@ -16,7 +16,7 @@ const handleRegister = async (req, res) =>{
         const hashedPwd = await bcrypt.hash(password, 10);
 
         // create new user in database
-        const newUser = await User.create({
+        const newUser = await UserDB.create({
             name: name,
             email: email,
             password: hashedPwd,

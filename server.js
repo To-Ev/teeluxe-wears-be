@@ -30,6 +30,7 @@ app.get('/', (req, res) =>{
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/products', require('./routes/ProductsRoute'));
 app.use('/api/cart', require('./routes/cartRoute'));
+app.use('/api/checkout', require('./routes/checkoutRoutes'));
 
 // Mongoose Connection
 mongoose.connection.once('open', () => {
