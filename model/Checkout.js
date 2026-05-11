@@ -19,6 +19,12 @@ const checkoutItemSchema = new Schema({
         type: Number,
         required: true
     },
+    size: String,
+    color: String,
+    quantity: {
+        type: Number,
+        required: true,
+    },
 }, 
     { _id: false }
 );
@@ -26,7 +32,7 @@ const checkoutItemSchema = new Schema({
 const checkoutSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: "UserDB",
         required: true,
     },
     checkoutItems: [checkoutItemSchema],

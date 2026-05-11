@@ -23,6 +23,7 @@ const orderItemSchema = new Schema({
     color: String,
     quantity: {
         type: Number,
+        default: 1,
         required: true,
     },
 },
@@ -69,9 +70,9 @@ const orderSchema = new Schema({
         default: "pending",
     },
     status: {
-        type: string,
+        type: String,
         enum: ["Processing", "Shipping", "Delivered", "Cancelled"],
-        default: "processing"
+        default: "Processing"
     },
 },
     { timeseries: true }

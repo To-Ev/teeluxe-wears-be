@@ -1,5 +1,5 @@
 const Checkout = require('../../model/Checkout');
-const cart = require('../../model/cart');
+const Cart = require('../../model/Cart');
 const Products = require('../../model/Products');
 const Order = require('../../model/Order');
 
@@ -80,6 +80,7 @@ const finalizeCheckout = async (req, res) => {
                 isPaid: true,
                 paidAt: checkout.paidAt,
                 isDelivered: false,
+                paymentMethod: checkout.paymentMethod,
                 paymentStatus: "paid",
                 paymentDetails: checkout.paymentDetails,
             });
@@ -87,6 +88,7 @@ const finalizeCheckout = async (req, res) => {
             // Mark the checkout as finalized
             checkout.isFinalized = true;
             checkout.finalizedAt = Date.now();
+            await checkout.save();
 
             // Delete the cart associated with the user
             await Cart.findOneAndDelete({ user: checkout.user });
@@ -96,9 +98,11 @@ const finalizeCheckout = async (req, res) => {
             res.status(400).json({ err: "Checkout already finalized" });
         } else {
             res.status(400).json({ err: "Checkout is not paid" })
-        }
+        };
+
     }catch(err) {
-        console.error(err)
+        console.error(err);
+        res.sendStatus(500);
     }
 }
 

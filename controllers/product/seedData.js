@@ -1,7 +1,7 @@
 const Products = require("../../model/Products");
 const UserDB = require('../../model/Users');
 const mockProducts = require('../../data/mockProducts');
-const Cart = require("../../model/cart");
+const Cart = require("../../model/Cart");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
