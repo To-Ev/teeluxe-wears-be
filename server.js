@@ -34,7 +34,11 @@ app.use('/api/checkout', require('./routes/checkoutRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
 app.use('/api', require('./routes/subscribeRoute'));
-app.use('/api/admin', require('./routes/adminRoute'));
+
+// admin routes
+app.use('/api/admin/users', require('./routes/adminRoute'));
+app.use('/api/admin/products', require('./routes/productAdminRoutes'));
+app.use('/api/admin/orders', require('./routes/adminOrderRoutes'));
 
 // Mongoose Connection
 mongoose.connection.once('open', () => {
