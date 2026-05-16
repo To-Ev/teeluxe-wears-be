@@ -26,7 +26,7 @@ const handleLogin = async (req, res) =>{
             {expiresIn: '45m'}
         );
 
-        res.status(200).json({ msg: "Login successful!", accessToken});
+        res.status(200).json({ msg: "Login successful!", token: accessToken });
     } catch (err) {
         console.error(err);
         res.sendStatus(500);

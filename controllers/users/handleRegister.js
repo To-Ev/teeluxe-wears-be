@@ -34,7 +34,7 @@ const handleRegister = async (req, res) =>{
             {expiresIn: '45m'}
         );
 
-        res.status(201).json({ msg: `New user ${newUser.name} created successfully!`, accessToken });
+        res.status(201).json({ msg: `New user ${newUser.name} created successfully!`, token: accessToken });
     } catch (err) {
         console.error(err);
         res.status(500).json({ err: "server error" });

@@ -12,7 +12,7 @@ const PORT = 5000;
 connectDB();
 
 // Custom middleware
-// app.use(cors(corsOption));
+app.use(cors());
 
 // Serve the Backend/public folder (fix incorrect path)
 app.use(express.static(path.join(__dirname, 'public')));
@@ -33,7 +33,7 @@ app.use('/api/cart', require('./routes/cartRoute'));
 app.use('/api/checkout', require('./routes/checkoutRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
-app.use('/api', require('./routes/subscribeRoute'));
+app.use('/api/subscribe', require('./routes/subscribeRoute'));
 
 // admin routes
 app.use('/api/admin/users', require('./routes/adminRoute'));
