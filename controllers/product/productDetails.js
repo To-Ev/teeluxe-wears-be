@@ -1,4 +1,5 @@
 const Products = require("../../model/Products");
+const mongoose = require("mongoose");
 
 // Product details
 const productDetails = async (req, res) => {
@@ -27,7 +28,7 @@ const similarProducts = async (req, res) => {
         };
 
         const similarProducts = await Products.find({
-            _id: { $ne: id }, //exclude the current product ID
+            _id: { $ne: new mongoose.Types.ObjectId(id) },
             section: product.section,
             category: product.category,
         }).limit(4);
