@@ -34,7 +34,15 @@ const handleRegister = async (req, res) =>{
             {expiresIn: '45m'}
         );
 
-        res.status(201).json({ msg: `New user ${newUser.name} created successfully!`, token: accessToken });
+        // Sanitize user object before sending
+        const safeUser = {
+            id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            role: newUser.role,
+        };
+
+        res.status(201).json({ msg: `New user ${newUser.name} created successfully!`, token: accessToken, user: safeUser });
     } catch (err) {
         console.error(err);
         res.status(500).json({ err: "server error" });

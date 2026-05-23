@@ -26,7 +26,15 @@ const handleLogin = async (req, res) =>{
             {expiresIn: '45m'}
         );
 
-        res.status(200).json({ msg: "Login successful!", token: accessToken });
+        // Sanitize user object before sending
+        const safeUser = {
+        id: foundUser._id,
+        name: foundUser.name,
+        email: foundUser.email,
+        role: foundUser.role,
+        };
+
+        res.status(200).json({ msg: "Login successful!", token: accessToken, user: safeUser });
     } catch (err) {
         console.error(err);
         res.sendStatus(500);
