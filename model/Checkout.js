@@ -72,7 +72,7 @@ const checkoutSchema = new Schema({
         type: Date,
     },
 },
-    { timeStamps: true }
+    { timestamps: true }
 )
 
 const Checkout = mongoose.model("Checkout", checkoutSchema);

@@ -43,6 +43,11 @@ const orderSchema = new Schema({
         postalCode: { type: String, required: true },
         country: { type: String, required: true },
     },
+    shippingMethod: {
+        type: String,
+        enum: ["Standard", "Express", "Pickup"],
+        default: "Standard"
+    },
     paymentMethod: {
         type: String,
         required: true,
@@ -75,7 +80,7 @@ const orderSchema = new Schema({
         default: "Processing"
     },
 },
-    { timeseries: true }
+    { timestamps: true }
 );
 
 const Order = mongoose.model("Order", orderSchema);

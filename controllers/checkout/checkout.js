@@ -74,8 +74,9 @@ const finalizeCheckout = async (req, res) => {
             // Create final order based on the checkout details
             const finalOrder = await Order.create({
                 user: checkout.user,
-                orderItem: checkout.orderItems,
+                orderItems: checkout.checkoutItems,
                 shippingAddress: checkout.shippingAddress,
+                shippingMethod: checkout.shippingMethod,
                 totalPrice: checkout.totalPrice,
                 isPaid: true,
                 paidAt: checkout.paidAt,

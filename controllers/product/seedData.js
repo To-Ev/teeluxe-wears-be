@@ -1,5 +1,8 @@
 const Products = require("../../model/Products");
 const UserDB = require('../../model/Users');
+const Order = require('../../model/Order');
+const Checkout = require('../../model/Checkout');
+const Subscriber = require('../../model/Subscriber');
 const mockProducts = require('../../data/mockProducts');
 const Cart = require("../../model/Cart");
 const bcrypt = require('bcrypt');
@@ -14,6 +17,9 @@ const seedData = async (req, res) =>{
         await Products.deleteMany();
         await UserDB.deleteMany();
         await Cart.deleteMany();
+        await Subscriber.deleteMany();
+        await Order.deleteMany();
+        await Checkout.deleteMany();
 
         // create new user in database
         const hashedPwd = await bcrypt.hash('pass123@7', 10);
@@ -34,7 +40,7 @@ const seedData = async (req, res) =>{
                 }
             },
             process.env.ACCESS_TOKEN_SECRET,
-            {expiresIn: '45m'}
+            {expiresIn: '48h'}
         );
 
         const UserId = createdUser._id
