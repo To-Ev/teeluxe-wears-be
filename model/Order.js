@@ -52,6 +52,9 @@ const orderSchema = new Schema({
         type: String,
         required: true,
     },
+    paymentDetails: {
+        type: mongoose.Schema.Types.Mixed, // or String if you only store the reference
+    },
     totalPrice: {
         type: Number,
         required: true

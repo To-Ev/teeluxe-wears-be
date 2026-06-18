@@ -143,7 +143,12 @@ const cartContentDelete = async (req, res) => {
                 (acc, item) => acc + Number(item.price) * Number(item.quantity),
                 0
             );
-            await cart.save();
+            await Cart.findByIdAndUpdate(
+                cartId, 
+                { products: [], totalPrice: 0 }, 
+                { new: true }
+            );
+
             return res.status(200).json(cart);
         } else {
             return res.status(404).json({ err: "Product not found in cart" })
