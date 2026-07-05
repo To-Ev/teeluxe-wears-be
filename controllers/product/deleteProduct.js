@@ -13,7 +13,8 @@ const deleteProduct = async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-    }
-}
+        res.status(500).json({ err: "Error deleting products" });
+    };
+};
 
 module.exports = deleteProduct
