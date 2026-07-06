@@ -13,17 +13,19 @@ const verifyJWT = async (req, res, next) => {
 
         const decoded = jwt.verify(
             token,
-            process.env.ACCESS_TOKEN_SECRET,
+            process.env.ACCESS_TOKEN_SECRET
         );
         req.user = await User.findById(decoded.user.id).select("-password"); //exclude password
 
         next();
     } catch (err) {
-        console.error('Failed to get token:', err);
-        res.sendStatus(400);
+        if (err.name === "TokenExpiredError") {
+            return res.status(401).json({ err: "Token expired" });
+        }
+        return res.status(403).json({ err: "Invalid token" });
     }
+}
 
-};
 
 // Middleware for checking if user is an Admin
 const Admin = (req, res, next) => {
