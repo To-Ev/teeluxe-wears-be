@@ -4,7 +4,7 @@ const Order = require('../../model/Order');
 const Checkout = require('../../model/Checkout');
 const Subscriber = require('../../model/Subscriber');
 const mockProducts = require('../../data/mockProducts');
-const Cart = require("../../model/Cart");
+const Cart = require("../../model/CartTemp");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
