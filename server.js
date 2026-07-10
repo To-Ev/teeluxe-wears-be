@@ -5,14 +5,15 @@ const express = require('express');
 const app = express();
 const cors= require('cors');
 const mongoose = require('mongoose');
-const connectDB = require('./config/db')
+const connectDB = require('./config/db');
+const corsOption = require('./config/corsOption');
 const PORT = 5000;
 
 // connect to mongoDB 
 connectDB();
 
 // Custom middleware
-app.use(cors());
+app.use(cors(corsOption))
 
 // Serve the Backend/public folder (fix incorrect path)
 app.use(express.static(path.join(__dirname, 'public')));
