@@ -8,6 +8,7 @@ const checkout = async (req, res) => {
         checkoutItems, 
         shippingAddress, 
         paymentMethod, 
+        shippingMethod,
         totalPrice 
     } = req.body;
 
@@ -22,11 +23,11 @@ const checkout = async (req, res) => {
             checkoutItems: checkoutItems,
             shippingAddress,
             paymentMethod,
+            shippingMethod,
             totalPrice,
             paymentStatus: "Pending",
             isPaid: false,
         });
-        console.log(`Checkout created for user: ${req.user._id}`)
         res.status(201).json(newCheckout);
     } catch(err) {
         console.error(err);

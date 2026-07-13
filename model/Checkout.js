@@ -42,6 +42,11 @@ const checkoutSchema = new Schema({
         postalCode: { type: String, required: true },
         country: { type: String, required: true },
     },
+    shippingMethod: {
+        type: String,
+        enum: ["Standard", "Express", "Pickup"],
+        default: "Standard"
+    },
     paymentMethod: {
         type: String,
         required: true,
