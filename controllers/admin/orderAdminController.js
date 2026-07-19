@@ -2,13 +2,26 @@ const Order = require("../../model/Order");
 
 const getAllOrders = async (req, res) => {  
     try {
-        const orders = await Order.find().populate('user', 'name email');
+        const orders = await Order.find().populate('user', 'id name email').sort({ createdAt: -1 }) // latest first
         if(orders.length === 0) {
             return res.status(404).json({ err: "No orders found" });
         };
         res.json(orders);
-    }
-    catch (err) {
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: "Error fetching orders" });
+    }   
+};
+
+const getOrderDetails = async (req, res) => {  
+    try {
+        const order = await Order.findById(req.params.id)
+            .populate('user', 'id name email')
+            .populate('orderItems.productId', 'name image price');
+        if (order) {
+            res.json(order);
+        }
+    } catch (err) {
         console.error(err);
         res.status(500).json({ err: "Error fetching orders" });
     }   
@@ -52,4 +65,4 @@ const deleteOrder = async (req, res) => {
     }
 };
 
-module.exports = { getAllOrders, updateOrderStatus, deleteOrder };
+module.exports = { getAllOrders, updateOrderStatus, deleteOrder, getOrderDetails };

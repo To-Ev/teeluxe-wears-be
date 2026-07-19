@@ -2,7 +2,7 @@ const Products = require("../../model/Products");
 
 const getAllProducts = async (req, res) => {
     try {
-        const products = await Products.find();
+        const products = await Products.find().sort({ createdAt: -1 });
         res.json(products);
     } catch (err) {
         console.error(err);

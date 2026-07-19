@@ -144,8 +144,8 @@ const cartContentDelete = async (req, res) => {
                 0
             );
             await Cart.findByIdAndUpdate(
-                cartId, 
-                { products: [], totalPrice: 0 }, 
+                cart._id, 
+                { products: cart.products, totalPrice: cart.totalPrice }, 
                 { new: true }
             );
 
