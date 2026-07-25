@@ -1,5 +1,7 @@
 const express= require('express');
-const {verifyJWT, Admin} = require('../middleware/verifyJWT');
+const { verifyJWT } = require('../middleware/verifyJWT');
+const verifyRoles = require("../middleware/verifyRoles");
+const ROLES_LIST = require("../config/ROLES_LIST");
 const handleProduct = require('../controllers/product/handleProduct');
 const editProduct = require('../controllers/product/editProduct');
 const deleteProduct = require('../controllers/product/deleteProduct');
@@ -9,9 +11,9 @@ const {productDetails, similarProducts, bestSeller, newArrivals} = require('../c
 const router = express.Router();
 
 // Admin routes
-router.post("/", verifyJWT, Admin, handleProduct);
-router.put("/:id", verifyJWT, Admin, editProduct);
-router.delete("/:id", verifyJWT, Admin, deleteProduct);
+router.post("/", verifyJWT, verifyRoles(ROLES_LIST.Admin), handleProduct);
+router.put("/:id", verifyJWT, verifyRoles(ROLES_LIST.Admin), editProduct);
+router.delete("/:id", verifyJWT, verifyRoles(ROLES_LIST.Admin), deleteProduct);
 
 // Public routes
 router.get("/", handleGetProduct);

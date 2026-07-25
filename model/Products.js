@@ -54,7 +54,7 @@ const userSchema = new Schema(
         },
         section: {
             type: String,
-            enum: ["Jewelries", "Wears"]
+            enum: ["Accessories", "Clothing"]
         },
         images: [
             {

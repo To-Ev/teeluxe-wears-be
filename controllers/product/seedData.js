@@ -7,6 +7,7 @@ const mockProducts = require('../../data/mockProducts');
 const Cart = require("../../model/Cart");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const ROLES_LIST = require('../../config/ROLES_LIST');
 
 
 const seedData = async (req, res) =>{
@@ -28,19 +29,26 @@ const seedData = async (req, res) =>{
             name: "Bukola",
             email: "bukola@example.com",
             password: hashedPwd,
-            role: "admin"
+            roles: {
+                Customer: ROLES_LIST.Customer,
+                Admin: ROLES_LIST.Admin,
+                Courier: ROLES_LIST.Courier,
+                Editor: ROLES_LIST.Editor
+            }
         });
 
+        const roles = Object.values(createdUser.roles);
         // sign and return jwt token with user 
         const accessToken = jwt.sign(
             {
                 user: {
                     id: createdUser._id,
-                    role: createdUser.role,
+                    name: createdUser.name,
+                    roles: roles,
                 }
             },
             process.env.ACCESS_TOKEN_SECRET,
-            {expiresIn: '48h'}
+            {expiresIn: '45m'}
         );
 
         const UserId = createdUser._id
@@ -50,7 +58,7 @@ const seedData = async (req, res) =>{
 
         await Products.insertMany(createdProduct);
 
-        res.status(201).json({ msg: "Product data seeded successfully!", accessToken });
+        res.status(201).json({ msg: "Seeded successfully!", accessToken });
     } catch (err) {
         console.error(`Error seeding data:`, err);
         res.sendStatus(500);

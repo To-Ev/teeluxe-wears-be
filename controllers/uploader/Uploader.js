@@ -24,10 +24,11 @@ const uploadImage = async (req, res) => {
         } else {
           reject(error);
         }
-        });
+        }
+      );
 
-        // Convert the buffer to a readable stream and pipe it to Cloudinary
-        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      // Convert the buffer to a readable stream and pipe it to Cloudinary
+      streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
     });
 
     // Return the URL of the uploaded image

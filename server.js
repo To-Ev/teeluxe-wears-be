@@ -7,6 +7,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const corsOption = require('./config/corsOption');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 5000;

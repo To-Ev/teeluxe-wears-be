@@ -7,7 +7,9 @@ const verifyJWT = async (req, res, next) => {
     const authHeader = req.headers.Authorization || req.headers.authorization;
     
     try {
-        if(!authHeader?.startsWith('Bearer')) return res.status(401).json({ err: "Unauthorized! Invalid token!" });
+        if (!authHeader?.startsWith('Bearer')) {
+            return res.status(401).json({ err: "Unauthorized! Invalid token!" });
+        }
 
         const token = authHeader.split(" ")[1]; 
 
@@ -16,24 +18,17 @@ const verifyJWT = async (req, res, next) => {
             process.env.ACCESS_TOKEN_SECRET
         );
         req.user = await User.findById(decoded.user.id).select("-password"); //exclude password
+        req.roles = decoded.user.roles;
 
         next();
     } catch (err) {
         if (err.name === "TokenExpiredError") {
-            return res.status(401).json({ err: "Token expired" });
+            return res.status(401).json({ err: "Token expired! Try login again." });
+        } else if (err.name === "JsonWebTokenError") {
+            return res.status(401).json({ err: "Invalid token! Try login again." });
         }
-        return res.status(403).json({ err: "Invalid token" });
     }
 }
 
 
-// Middleware for checking if user is an Admin
-const Admin = (req, res, next) => {
-    if(req.user && req.user.role === "admin") {
-        next();
-    } else {
-        res.status(403).json({ err: "Not authorized as an admin!" });
-    }
-};
-
-module.exports = { verifyJWT, Admin }
+module.exports = { verifyJWT }

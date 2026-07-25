@@ -1,6 +1,7 @@
 const UserDB = require("../../model/Users");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const ROLES_LIST = require('../../config/ROLES_LIST');
 
 const handleRegister = async (req, res) =>{
     const {name, email, password} = req.body;
@@ -27,19 +28,35 @@ const handleRegister = async (req, res) =>{
             {
                 user: {
                     id: newUser._id,
-                    role: newUser.role,
+                    name: newUser.name,
+                    roles:  { Customer: ROLES_LIST.Customer }
                 }
             },
             process.env.ACCESS_TOKEN_SECRET,
-            {expiresIn: '48h'}
+            {expiresIn: '45m'}
         );
+
+        const refreshToken = jwt.sign(
+            { user: { id: newUser._id } },
+            process.env.REFRESH_TOKEN_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        newUser.refreshToken = refreshToken;
+        await newUser.save();
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
         // Sanitize user object before sending
         const safeUser = {
             id: newUser._id,
             name: newUser.name,
             email: newUser.email,
-            role: newUser.role,
+            roles: newUser.roles,
         };
 
         res.status(201).json({ msg: `New user ${newUser.name} created successfully!`, token: accessToken, user: safeUser });

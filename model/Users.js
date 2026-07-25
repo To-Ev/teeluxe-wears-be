@@ -21,11 +21,16 @@ const userSchema = new Schema(
             required: true,
             minLength: 6,
         },
-        role: {
-            type: String,
-            enum: ["customer", "admin"],
-            default: "customer"
+        roles: {
+            Customer: {
+                type: Number,
+                default: 2001
+            },
+            Admin: Number,
+            Courier: Number,
+            Editor: Number
         },
+        refreshToken: String
     },
     {timestamps: true}
 );
