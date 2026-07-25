@@ -3,9 +3,8 @@ const Order = require("../../model/Order");
 const getAllOrders = async (req, res) => {  
     try {
         const orders = await Order.find().populate('user', 'id name email').sort({ createdAt: -1 }) // latest first
-        if(orders.length === 0) {
-            return res.status(404).json({ err: "No orders found" });
-        };
+        
+        // Always return the array, even if empty
         res.json(orders);
     } catch (err) {
         console.error(err);
