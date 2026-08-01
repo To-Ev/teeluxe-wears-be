@@ -6,6 +6,7 @@ const handleProduct = require('../controllers/product/handleProduct');
 const editProduct = require('../controllers/product/editProduct');
 const deleteProduct = require('../controllers/product/deleteProduct');
 const handleGetProduct = require('../controllers/product/handleGetProduct');
+const { addProductReview } = require('../controllers/product/addProductReview ')
 const {productDetails, similarProducts, bestSeller, newArrivals} = require('../controllers/product/productDetails');
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.put("/:id", verifyJWT, verifyRoles(ROLES_LIST.Admin), editProduct);
 router.delete("/:id", verifyJWT, verifyRoles(ROLES_LIST.Admin), deleteProduct);
 
 // Public routes
+router.post("/:id/reviews", verifyJWT, addProductReview);
 router.get("/", handleGetProduct);
 
 // Specific routes first

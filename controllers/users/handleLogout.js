@@ -15,6 +15,7 @@ const handleLogout = async (req, res) => {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
   });
 
   res.sendStatus(204);

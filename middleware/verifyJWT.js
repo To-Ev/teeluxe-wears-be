@@ -23,7 +23,7 @@ const verifyJWT = async (req, res, next) => {
         next();
     } catch (err) {
         if (err.name === "TokenExpiredError") {
-            return res.status(401).json({ err: "Token expired! Try login again." });
+            return res.status(401).json({ err: "Token expired" });
         } else if (err.name === "JsonWebTokenError") {
             return res.status(401).json({ err: "Invalid token! Try login again." });
         }

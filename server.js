@@ -17,6 +17,7 @@ connectDB();
 
 // Apply CORS first
 app.use(cors(corsOption));
+app.use(cookieParser());
 
 // Middleware for JSON and URL-encoded data
 app.use(express.json());

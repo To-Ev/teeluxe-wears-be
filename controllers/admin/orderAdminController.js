@@ -42,7 +42,7 @@ const updateOrderStatus = async (req, res) => {
             status === "Delivered" ? Date.now() : order.deliveredAt;
 
         const updatedOrder = await order.save();
-        res.json({ msg: "Order status updated", order: updatedOrder });
+        res.json(updatedOrder);
     } catch (err) {
         console.error(err);
         res.status(500).json({ err: "Server error" });
