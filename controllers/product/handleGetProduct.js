@@ -22,11 +22,11 @@ const handleGetProduct = async (req, res) => {
 
         // filter logic
         if(collection && collection.toLocaleLowerCase() !== "all") {
-            query.collections = collection;
+            query.collection = collection;
         }
 
         if(category && category.toLocaleLowerCase() !== "all") {
-            query.category = category;
+            query.category = { $in: category.split(",") };
         }
 
         if(material) {
@@ -38,7 +38,7 @@ const handleGetProduct = async (req, res) => {
         }
 
         if(color) {
-            query.colors = { $in: [color] };
+            query.color = { $in: [color] };
         }
 
         if(brand) {
@@ -64,23 +64,29 @@ const handleGetProduct = async (req, res) => {
 
         // sort logic
         let sort = {};
-        if(sortBy) {
+        if (sortBy) {
             switch (sortBy) {
-                case "priceAsc":
-                    sort = { price: 1 };
-                    break;
-                case "priceDesc":
-                    sort = { price: -1 };
-                    break;
-                case "popularity":
-                    sort = { rating: -1 };
-                    break;
-                default:
-                    break;
-            }
+            case "priceAsc":
+            sort = { createdAt: -1, price: 1 }; // newest first, then lowest price
+            break;
+            case "priceDesc":
+            sort = { createdAt: -1, price: -1 }; // newest first, then highest price
+            break;
+            case "popularity":
+            sort = { createdAt: -1, rating: -1 }; // newest first, then highest rating
+            break;
+            default:
+            sort = { createdAt: -1 }; // fallback
+            break;
+        }
+        } else {
+            // no sortBy → just latest first
+            sort = { createdAt: -1 };
         }
 
-        let products = await Product.find(query).sort(sort).limit(Number(limit) || 0);
+        const products = await Product.find(query)
+        .sort(sort)
+        .limit(Number(limit) || 0);
 
         res.status(200).json(products)
     } catch (err) {
