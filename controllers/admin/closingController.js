@@ -5,6 +5,11 @@ const yearClosing = async (req, res) => {
   try {
     // Count orders before deletion
     const orderCount = await Orders.countDocuments();
+
+    if (orderCount === 0) {
+      return res.status(400).json({ err: "No orders to close" });
+    }
+
     const totalRevenue = await Orders.aggregate([
       { $group: { _id: null, total: { $sum: "$totalPrice" } } }
     ]);
