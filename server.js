@@ -24,12 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
-app.use('/teeluxe-wears-fe', express.static(path.join(__dirname, 'dist')));
-
-// Catch-all route for SPA (handles with or without trailing slash)
-app.get(/^\/teeluxe-wears-fe(\/.*)?$/, (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Root route
 app.get('/', (req, res) => {
