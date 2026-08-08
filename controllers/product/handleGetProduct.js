@@ -67,13 +67,13 @@ const handleGetProduct = async (req, res) => {
         if (sortBy) {
             switch (sortBy) {
             case "priceAsc":
-            sort = { createdAt: -1, price: 1 }; // newest first, then lowest price
+            sort = { price: 1 }; // lowest price
             break;
             case "priceDesc":
-            sort = { createdAt: -1, price: -1 }; // newest first, then highest price
+            sort = { price: -1 }; // highest price
             break;
             case "popularity":
-            sort = { createdAt: -1, rating: -1 }; // newest first, then highest rating
+            sort = { rating: -1 }; // highest rating
             break;
             default:
             sort = { createdAt: -1 }; // fallback
