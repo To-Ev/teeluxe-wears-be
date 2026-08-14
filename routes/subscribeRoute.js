@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { addSubscriber } = require('../controllers/subscriber/subscriberController');
 
-// @route POST /api/subscribers
-// @desc Add a new subscriber
-router.post('/subscribe', addSubscriber);
+// @route POST /api/subscribe
+// @desc Subscribe to the newsletter
+router.post('/', addSubscriber);
 
 module.exports = router;

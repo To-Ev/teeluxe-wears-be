@@ -4,13 +4,17 @@ const Subscriber = require('../../model/Subscriber');
 const addSubscriber = async (req, res) => {
 
     const { email } = req.body;
-    if (!email) {
-        return res.status(400).json({ err: "Email is required" });
-    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ err: "Invalid email format" });
+    };
 
     try {
         // Check if the email already exists
-        const existingSubscriber = await Subscriber.findOne({ email });
+        const normalizedEmail = email.toLowerCase();
+        const existingSubscriber = await Subscriber.findOne({ email: normalizedEmail });
+
         if (existingSubscriber) {
             return res.status(400).json({ err: "Email already subscribed" });
         }

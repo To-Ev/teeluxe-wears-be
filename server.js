@@ -1,6 +1,8 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
+require("./controllers/subscriber/emailQueue"); 
+
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
