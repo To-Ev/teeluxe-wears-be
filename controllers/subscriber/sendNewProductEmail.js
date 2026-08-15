@@ -51,7 +51,7 @@ const sendNewProductEmail = async (subscriber, product) => {
   const transporter = getTransporter();
 
   await transporter.sendMail({
-    from: '"Teeluxe Wears" <newsletter@teeluxe.com>',
+    from: '"Derayo & Co" <newsletter@teeluxe.com>',
     to: subscriber.email,
     subject: `New Product: ${product.name}`,
     html,
