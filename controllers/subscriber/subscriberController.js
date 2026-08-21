@@ -22,7 +22,7 @@ const addSubscriber = async (req, res) => {
         // Create a new subscriber
         const newSubscriber = new Subscriber({ email });
         await newSubscriber.save();
-        res.status(201).json({ msg: "Subscriber added successfully" });
+        res.status(201).json({ msg: "Subscribed successfully" });
     } catch (error) {
         console.error('Error adding subscriber:', error);
         res.status(500).json({ err: "Failed to add subscriber" });
