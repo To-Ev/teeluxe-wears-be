@@ -1,4 +1,13 @@
 const Subscriber = require('../../model/Subscriber');
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 
 const addSubscriber = async (req, res) => {
@@ -22,6 +31,14 @@ const addSubscriber = async (req, res) => {
         // Create a new subscriber
         const newSubscriber = new Subscriber({ email });
         await newSubscriber.save();
+
+        await transporter.sendMail({
+            from: `"Derayo & Co" <${process.env.EMAIL_USER}>`,
+            to: newSubscriber.email,
+            subject: "Welcome to Derayo & Co!",
+            text: "Thanks for subscribing! If this email landed in Spam, please mark it as 'Not Spam' so you never miss our updates.",
+        });
+
         res.status(201).json({ msg: "Subscribed successfully" });
     } catch (error) {
         console.error('Error adding subscriber:', error);
