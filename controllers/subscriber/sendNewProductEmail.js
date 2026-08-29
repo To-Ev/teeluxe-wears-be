@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
-const mjml = require("mjml");
+const mjml2html = require("mjml");
+
 
 const getTransporter = () => {
   if (process.env.NODE_ENV === "production") {
@@ -22,15 +23,29 @@ const getTransporter = () => {
   }
 };
 
+async function compileMjml(template) {
+  const { html, errors } = await mjml2html(template, { validationLevel: "soft" });
+
+  if (errors && errors.length > 0) {
+    console.error("MJML compilation errors:", errors);
+  }
+
+  return html;
+}
+
 const mjmlTemplate = `
   <mjml>
-    <mj-body background-color="#f9fafb">
-      <mj-section background-color="#ffffff" padding="30px">
+    <mj-body background-color="#121212">
+      <mj-section background-color="#1e1e1e" padding="30px" border-radius="8px">
         <mj-column>
-          <mj-image src="{{productImage}}" alt="{{productName}}" width="300px" />
-          <mj-text font-size="20px" font-weight="bold">{{productName}}</mj-text>
-          <mj-text>{{productDescription}}</mj-text>
-          <mj-button href="{{productUrl}}" background-color="#f59e0b">
+          <mj-image src="{{productImage}}" alt="{{productName}}" width="300px" padding="0 0 20px 0" />
+          <mj-text font-size="22px" font-weight="bold" color="#ffffff" padding="10px 0">
+            {{productName}}
+          </mj-text>
+          <mj-text font-size="16px" line-height="1.5" color="#cccccc" padding="10px 0">
+            {{productDescription}}
+          </mj-text>
+          <mj-button href="{{productUrl}}" background-color="#f59e0b" color="#ffffff" font-size="16px" border-radius="4px" padding="15px 25px">
             Shop Now
           </mj-button>
         </mj-column>
@@ -39,23 +54,25 @@ const mjmlTemplate = `
   </mjml>
 `;
 
-const sendNewProductEmail = async (subscriber, product) => {
+const sendNewProductEmail = async (subscribers, product) => {
   const mjmlWithData = mjmlTemplate
-    .replace("{{productName}}", product.name)
-    .replace("{{productImage}}", product.images[0].url)
-    .replace("{{productDescription}}", product.description)
-    .replace("{{productUrl}}", `https://to-ev.github.io/teeluxe-wears-fe/product/${product._id}`);
+    .replaceAll("{{productName}}", product.name)
+    .replaceAll("{{productImage}}", product.images[0].url)
+    .replaceAll("{{productDescription}}", product.description)
+    .replaceAll("{{productUrl}}", `https://to-ev.github.io/teeluxe-wears-fe/product/${product._id}`);
 
-  const { html } = mjml(mjmlWithData, { validationLevel: "soft" });
+  const html = await compileMjml(mjmlWithData);
 
   const transporter = getTransporter();
 
-  await transporter.sendMail({
-    from: '"Derayo & Co" <newsletter@derayo.ng.com>',
-    to: subscriber.email,
-    subject: `New Product: ${product.name}`,
-    html,
-  });
+  for (const sub of subscribers) {
+    await transporter.sendMail({
+      from: `"Derayo & Co" <${process.env.EMAIL_USER}>`,
+      to: sub.email,
+      subject: `New Product: ${product.name}`,
+      html,
+    });
+  };
 };
 
 module.exports = { sendNewProductEmail };

@@ -15,8 +15,8 @@ const emailQueue = new Queue("emailQueue", {
 
 // Process jobs
 emailQueue.process(async (job) => {
-  const { subscriber, product } = job.data;
-  await sendNewProductEmail(subscriber, product);
+  const { subscribers, product } = job.data;
+  await sendNewProductEmail(subscribers, product);
 });
 
 // Logging
