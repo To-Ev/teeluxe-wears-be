@@ -87,6 +87,13 @@ const finalizeCheckout = async (req, res) => {
                 paymentDetails: checkout.paymentDetails,
             });
 
+            for (const item of checkout.checkoutItems) {
+                await Products.updateOne(
+                    { _id: item.productId, countInStock: { $gte: item.quantity } },
+                    { $inc: { countInStock: -item.quantity } }
+                );
+            }
+
             // Mark the checkout as finalized
             checkout.isFinalized = true;
             checkout.finalizedAt = Date.now();

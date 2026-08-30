@@ -66,13 +66,19 @@ const sendNewProductEmail = async (subscribers, product) => {
   const transporter = getTransporter();
 
   for (const sub of subscribers) {
-    await transporter.sendMail({
-      from: `"Derayo & Co" <${process.env.EMAIL_USER}>`,
-      to: sub.email,
-      subject: `New Product: ${product.name}`,
-      html,
-    });
-  };
+    try {
+      await transporter.sendMail({
+        from: `"Derayo & Co" <${process.env.EMAIL_USER}>`,
+        to: sub.email,
+        subject: `New Product: ${product.name}`,
+        html,
+      });
+      console.log(`Email sent to ${sub.email}`);
+    } catch (err) {
+      console.error(`Failed to send email to ${sub.email}:`, err);
+    }
+  }
+
 };
 
 module.exports = { sendNewProductEmail };
