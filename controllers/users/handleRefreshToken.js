@@ -11,6 +11,7 @@ const handleRefreshToken = async (req, res) =>{
         // Verify refresh token
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
+        if(!decoded) return res.status(403).json({ err: "Invalid token" });
         // Find user by ID
         const foundUser = await UserDB.findById(decoded.user.id).exec();
         if (!foundUser) return res.status(404).json({ err: "User does not exist" });
