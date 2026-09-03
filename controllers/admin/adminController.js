@@ -41,25 +41,22 @@ const addNewUser = async (req, res) => {
 };
 
 const updateUserInfo = async (req, res) => {
+
   const { id } = req.params;
-  const { name, email, password, role } = req.body;
+  const { name, email, roles } = req.body;
+
   try {
     // Find the user by ID
     const user = await UserDB.findById(id);
 
     if (!user) {
       return res.status(404).json({ err: "User not found" });
-    }
+    };
 
     // Update user fields
     user.name = name || user.name;
     user.email = email || user.email;
-    user.role = role || user.role;
-
-    // Hash the new password if provided
-    if (password) {
-      user.password = await bcrypt.hash(password, 10);
-    }
+    user.roles = roles || user.roles;
 
     // Save the updated user
     const updatedUser = await user.save();
