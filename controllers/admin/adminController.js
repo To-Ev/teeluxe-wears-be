@@ -13,7 +13,7 @@ const getAllUsers = async (req, res) => {
 };
 
 const addNewUser = async (req, res) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, roles } = req.body;
 
     try {
         // Create a new user
@@ -26,10 +26,10 @@ const addNewUser = async (req, res) => {
         const hashedPwd = await bcrypt.hash(password, 10);
 
         const newUser = new UserDB({ 
-            name, 
-            email, 
-            password: hashedPwd, 
-            role: role || "customer" 
+          name, 
+          email, 
+          password: hashedPwd, 
+          roles: roles || ["customer"] 
         });
         await newUser.save();
 
