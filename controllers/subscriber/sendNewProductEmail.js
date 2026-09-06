@@ -1,26 +1,14 @@
 const nodemailer = require("nodemailer");
 const mjml2html = require("mjml");
 
-
 const getTransporter = () => {
-  if (process.env.NODE_ENV === "production") {
-    return nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-  } else {
-    return nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
-      auth: {
-        user: process.env.MAILTRAP_USER,
-        pass: process.env.MAILTRAP_PASS,
-      },
-    });
-  }
+  return nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 };
 
 async function compileMjml(template) {
@@ -50,6 +38,12 @@ const mjmlTemplate = `
           </mj-button>
         </mj-column>
       </mj-section>
+      <mj-text font-size="12px" color="#888888" padding="20px 0">
+        If you no longer wish to receive these emails, 
+        <a href="https://to-ev.github.io/api/subscribe/unsubscribe/{{subscriberEmail}}" style="color:#f59e0b;">
+          click here to unsubscribe
+        </a>.
+      </mj-text>
     </mj-body>
   </mjml>
 `;
@@ -66,14 +60,20 @@ const sendNewProductEmail = async (subscribers, product) => {
   const transporter = getTransporter();
 
   for (const sub of subscribers) {
+
+    const personalizedHtml = html.replace("{{subscriberEmail}}", encodeURIComponent(sub.email));
     try {
       await transporter.sendMail({
         from: `"Derayo & Co" <${process.env.EMAIL_USER}>`,
         to: sub.email,
         subject: `New Product: ${product.name}`,
-        html,
+        html: personalizedHtml,
       });
+
       console.log(`Email sent to ${sub.email}`);
+
+      // Add a 1 second delay before sending the next email
+      await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (err) {
       console.error(`Failed to send email to ${sub.email}:`, err);
     }

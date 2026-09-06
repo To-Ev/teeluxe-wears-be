@@ -54,7 +54,8 @@ const handleProduct = async (req, res) => {
 
         // Notify subscribers in background (don’t block response)
         try {
-            const subscribers = await Subscriber.find({});
+            
+            const subscribers = await Subscriber.find({ subscribed: true });
             await emailQueue.add({ subscribers, product: newProduct });
         } catch (notifyErr) {
             console.error("Failed to enqueue emails:", notifyErr);

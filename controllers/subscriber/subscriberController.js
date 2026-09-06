@@ -46,4 +46,26 @@ const addSubscriber = async (req, res) => {
     }
 };
 
-module.exports = { addSubscriber };
+const removeSubscriber = async (req, res) => {
+    
+    const { email } = req.params;
+    const normalizedEmail = email.toLowerCase();
+
+    try {
+        const result = await Subscriber.updateOne(
+        { email: normalizedEmail },
+        { subscribed: false }
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).send("Email not found or already unsubscribed.");
+        }
+
+        res.send("You have successfully unsubscribed.");
+    } catch (err) {
+        res.status(500).send("Error unsubscribing.");
+    }
+};
+
+
+module.exports = { addSubscriber, removeSubscriber };

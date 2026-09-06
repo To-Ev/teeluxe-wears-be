@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { addSubscriber } = require('../controllers/subscriber/subscriberController');
+const { addSubscriber, removeSubscriber } = require('../controllers/subscriber/subscriberController');
 
 // @route POST /api/subscribe
 // @desc Subscribe to the newsletter
 router.post('/', addSubscriber);
+router.post('/unsubscribe/:email', removeSubscriber);
 
 module.exports = router;
