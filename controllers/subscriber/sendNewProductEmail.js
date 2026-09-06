@@ -38,12 +38,17 @@ const mjmlTemplate = `
           </mj-button>
         </mj-column>
       </mj-section>
-      <mj-text font-size="12px" color="#888888" padding="20px 0">
-        If you no longer wish to receive these emails, 
-        <a href="https://to-ev.github.io/api/subscribe/unsubscribe/{{subscriberEmail}}" style="color:#f59e0b;">
-          click here to unsubscribe
-        </a>.
-      </mj-text>
+      <!-- Footer section -->
+      <mj-section>
+        <mj-column>
+          <mj-text font-size="12px" color="#888888" padding="20px 0">
+            If you no longer wish to receive these emails, 
+            <a href="https://to-ev.github.io/api/subscriber/unsubscribe/{{subscriberEmail}}" style="color:#f59e0b;">
+              click here to unsubscribe
+            </a>.
+          </mj-text>
+        </mj-column>
+      </mj-section>
     </mj-body>
   </mjml>
 `;
